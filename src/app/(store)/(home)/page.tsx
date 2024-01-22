@@ -10,9 +10,10 @@ async function getFeaturedProducts(): Promise<Product[]> {
       revalidate: 60 * 60, // 1 hour
     },
   })
+
   const products = await response.json()
 
-  return products.featuredProducts
+  return products
 }
 
 export const metadata: Metadata = {
