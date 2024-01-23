@@ -8,5 +8,5 @@ declare namespace Cypress {
 
 Cypress.Commands.add('searchByQuery', (query: string) => {
   cy.visit('/')
-  cy.get('input[name=q]').type('moletom').parent('form').submit()
+  cy.get('input[name=q]').type(query).parent('form').submit()
 })
