@@ -5,14 +5,12 @@ on: push
 jobs:
   cypress-run:
     runs-on: ubuntu-22.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Node.js
         uses: actions/setup-node@v3
-
         with:
           node-version: 20
 
@@ -26,7 +24,7 @@ jobs:
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
+  
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
@@ -38,13 +36,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Cypress binary
+        if: success()
+        uses: actions/cache@v3
+        with:
+         path: /home/runner/.cache/Cypress
+         key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+         restore-keys: |
+            ${{ runner.os }}-cypress
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
-
         env:
           APP_URL: "http://localhost:3000"
           NEXT_PUBLIC_API_BASE_URL: "https://e-commerce-api-delta-dun.vercel.app"
-
         with:
           build: npm run build
           start: npm start
